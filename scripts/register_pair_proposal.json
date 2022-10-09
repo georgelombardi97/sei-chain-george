@@ -1,0 +1,42 @@
+{
+    "title": "Register initial pairs for Spot",
+    "description": "Register initial pairs for Spot",
+    "batch_contract_pair": [
+        {
+            "contract_addr": "aaa",
+            "pairs": [
+                {
+                    "price_denom": "uusdc",
+                    "asset_denom": "uatom",
+                    "tick_size": "0.0000001"
+                },
+                {
+                    "price_denom": "uusdc",
+                    "asset_denom": "ubtc",
+                    "tick_size": "0.0000001"
+                },
+                {
+                    "price_denom": "uusdc",
+                    "asset_denom": "ueth",
+                    "tick_size": "0.0000001"
+                },
+                {
+                    "price_denom": "uusdc",
+                    "asset_denom": "uosmo",
+                    "tick_size": "0.0000001"
+                },
+                {
+                    "price_denom": "uusdc",
+                    "asset_denom": "usol",
+                    "tick_size": "0.0000001"
+                },
+                {
+                    "price_denom": "uusdc",
+                    "asset_denom": "usei",
+                    "tick_size": "0.0000001"
+                }
+            ]
+        }
+    ],
+    "deposit": "1000000usei"
+}
