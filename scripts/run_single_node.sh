@@ -24,7 +24,7 @@ seid init test --home $CHAIN_DIR/$CHAINID_1 --chain-id=$CHAINID_1
 echo $VAL_MNEMONIC_1  |  seid keys add val1 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
 echo $DEMO_MNEMONIC_1 | seid keys add demowallet1 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
 echo $DEMO_MNEMONIC_2 | seid keys add demowallet2 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
-echo $DEMO_MNEMONIC_3 | seid keys add demowallet3 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-baƒckend=test
+echo $DEMO_MNEMONIC_3 | seid keys add demowallet3 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
 
 #~/go/bin/seid keys add $keyname
 #seid add-genesis-account $(~/go/bin/seid keys show $keyname -a) 100000000000000000000usei,100000000000000000000uusdc,100000000000000000000uatom

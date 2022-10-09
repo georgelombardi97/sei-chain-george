@@ -14,6 +14,8 @@ SEID_HOME=$CHAIN_DIR/$CHAINID_1
 export SEID_HOME=$SEID_HOME
 
 WALLET_ADDR_1=$(seid --home $CHAIN_DIR/$CHAINID_1 keys show demowallet1 --keyring-backend test -a)
+WALLET_ADDR_2=$(seid --home $CHAIN_DIR/$CHAINID_1 keys show demowallet2 --keyring-backend test -a)
+WALLET_ADDR_3=$(seid --home $CHAIN_DIR/$CHAINID_1 keys show demowallet3 --keyring-backend test -a)
 
 # store code
 STORE_RES=$(seid tx wasm store ./scripts/spot_lite.wasm --from=demowallet1 --chain-id=$CHAINID_1 --gas auto --gas-adjustment 1.3 --broadcast-mode=block --keyring-backend test --home $SEID_HOME -y --output json)
@@ -77,18 +79,18 @@ sleep 2
 echo "Open Orders:"
 seid q dex get-orders $CONTRACT_ADDR  $WALLET_ADDR_1
 
+echo ""
+echo "Trading..."
+TRADE_RES=$(seid tx dex place-orders $CONTRACT_ADDR 'LONG?1.2?50?uusdc?uatom?LIMIT?{"leverage":"1","gg":"55","position_effect":"Open"}' \
+    --amount=10000000000uusdc -y --from=demowallet2 --gas auto --gas-adjustment 1.3 -b block --chain-id=$CHAINID_1 \
+    --keyring-backend test --home $CHAIN_DIR/$CHAINID_1 --output json)
 
-# store code
-#STORE_RES=$(seid tx wasm store ./x/dex/testdata/clearing_house.wasm --from=demowallet1 --chain-id=$CHAINID_1 --gas auto --gas-adjustment 1.3 --broadcast-mode=block --keyring-backend test --home $SEID_HOME -y --output json)
-#CODE_ID=$(echo $STORE_RES | jq -r '.logs[0].events[-1].attributes[0].value')
-#echo "CODE_ID:" $CODE_ID
+#echo "TRADE_RES:"
+#echo $TRADE_RES | jq ".height"
+TRADE_HEIGHT=$(echo $TRADE_RES | jq -r ".height")
+echo "TRADE_HEIGHT:" $TRADE_HEIGHT
 
-# instantiate the contract
-#INIT_MSG='{"whitelist": ["sei1m9l358xunhhwds0568za49mzhvuxx9uxw49a6v"],"denoms":["uatom","uusdc"],"use_whitelist":false,"admin":"sei1m9l358xunhhwds0568za49mzhvuxx9uxw49a6v","limit_order_fee":{"decimal":"0.0001","negative":false},"market_order_fee":{"decimal":"0.0001","negative":false},"liquidation_order_fee":{"decimal":"0.0001","negative":false},"margin_ratio":{"decimal":"0.0625","negative":false},"max_leverage":{"decimal":"4","negative":false}}'
-#INIT_MSG='{"gg":{}}'
-#INSTANTIATE_RES=$(seid tx wasm instantiate $CODE_ID "$INIT_MSG" --label "tmp1" --no-admin \
-#  --from demowallet1  --keyring-backend test --home $CHAIN_DIR/$CHAINID_1 \
-#   --gas auto --gas-adjustment 1.3 -b block -y --chain-id $CHAINID_1 --output json)
-#CONTRACT_ADDR=$(echo $INSTANTIATE_RES | jq -r '.logs[0].events[0].attributes[0].value')
-#echo "CONTRACT_ADDR:" $CONTRACT_ADDR
+MATCH_RESULT=$(seid q dex get-match-result $CONTRACT_ADDR $TRADE_HEIGHT)
+echo "\n\nMATCH_RESULT:"
+echo $MATCH_RESULT
 
