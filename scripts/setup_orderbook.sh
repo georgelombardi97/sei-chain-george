@@ -57,7 +57,7 @@ VOTE_RES=$(seid tx gov vote $PROPOSAL_ID yes -y --from=val1 \
 
 #echo "VOTE_RES:" $VOTE_RES
 #exit
-printf "\n\nWaiting for the proposal to pass"
+printf "\nWaiting for the proposal to pass"
 sleep 10
 
 #"PositionDirection?Price?Quantitiy?PriceDenom?AssetDenom?OrderType?Data"
@@ -79,18 +79,29 @@ sleep 2
 echo "Open Orders:"
 seid q dex get-orders $CONTRACT_ADDR  $WALLET_ADDR_1
 
-echo ""
+echo "\n"
+echo "Balance before trade: (both taker and maker balances change)"
+#seid q bank balances $WALLET_ADDR_2
+#seid q bank balances $WALLET_ADDR_1
+
 echo "Trading..."
 TRADE_RES=$(seid tx dex place-orders $CONTRACT_ADDR 'LONG?1.2?50?uusdc?uatom?LIMIT?{"leverage":"1","gg":"55","position_effect":"Open"}' \
-    --amount=10000000000uusdc -y --from=demowallet2 --gas auto --gas-adjustment 1.3 -b block --chain-id=$CHAINID_1 \
+    --amount=60uusdc -y --from=demowallet2 --gas auto --gas-adjustment 1.3 -b block --chain-id=$CHAINID_1 \
     --keyring-backend test --home $CHAIN_DIR/$CHAINID_1 --output json)
-
 #echo "TRADE_RES:"
+#echo $TRADE_RES
 #echo $TRADE_RES | jq ".height"
+echo "Balance after trade: (both taker and maker balances change)"
+#seid q bank balances $WALLET_ADDR_2
+#seid q bank balances $WALLET_ADDR_1
+
+# if we deposited more than order execution, it will stay in the dex contract address and can be withdrawn
+# seid q wasm contract-state smart $CONTRACT_ADDR "{\"get_balance\":{\"account\":\"$WALLET_ADDR_2\",\"denom\":\"uusdc\"}}"
+
 TRADE_HEIGHT=$(echo $TRADE_RES | jq -r ".height")
 echo "TRADE_HEIGHT:" $TRADE_HEIGHT
 
 MATCH_RESULT=$(seid q dex get-match-result $CONTRACT_ADDR $TRADE_HEIGHT)
-echo "\n\nMATCH_RESULT:"
+printf "\n\nMATCH_RESULT:"
 echo $MATCH_RESULT
 
